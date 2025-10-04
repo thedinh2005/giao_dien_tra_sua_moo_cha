@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 //import trang đăng ký ở đây
 import 'register_page.dart';
 
@@ -15,12 +18,52 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loginUser() async {
+    setState(() => _isLoading = true);
+
+    final url = Uri.parse("http://10.0.2.2:3000/users/login");
+    // 🔥 Nếu bạn test trên điện thoại thật → đổi 10.0.2.2 thành IP LAN máy tính, ví dụ: 192.168.1.5
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "phone": _phoneController.text.trim(),
+          "password": _passwordController.text.trim(),
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        // Đăng nhập thành công
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(data["message"])));
+        widget.onLoginSuccess();
+      } else {
+        // Lỗi (sai pass hoặc user không tồn tại)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"] ?? "Đăng nhập thất bại")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Lỗi kết nối server: $e")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -57,7 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                     if (value == null || value.isEmpty) {
                       return "Vui lòng nhập số điện thoại";
                     }
-                    // Regex: bắt đầu bằng 0, đủ 10 số
                     if (!RegExp(r'^0\d{9}$').hasMatch(value)) {
                       return "Số điện thoại không hợp lệ";
                     }
@@ -88,12 +130,13 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Nút đăng nhập
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Nếu form hợp lệ thì gọi callback
-                      widget.onLoginSuccess();
-                    }
-                  },
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          if (_formKey.currentState!.validate()) {
+                            _loginUser();
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     foregroundColor: Colors.white,
@@ -102,10 +145,15 @@ class _LoginPageState extends State<LoginPage> {
                       vertical: 14,
                     ),
                   ),
-                  child: const Text(
-                    "Đăng nhập",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Đăng nhập",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
 
                 const SizedBox(height: 16),
@@ -117,10 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(
                         builder: (_) => RegisterPage(
                           onRegisterSuccess: () {
-                            // Khi đăng ký thành công → quay lại LoginPage
                             Navigator.pop(context);
-
-                            // Có thể show thông báo ở LoginPage
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
@@ -136,9 +181,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text(
                     "Chưa có tài khoản? Đăng ký",
                     style: TextStyle(
-                      color: Colors.blue, // giống liên kết
+                      color: Colors.blue,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline, // gạch dưới
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -23,6 +25,47 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  Future<void> _registerUser() async {
+    final url = Uri.parse("http://10.0.2.2:3000/users/register");
+    // ⚠️ Nếu chạy thật trên điện thoại thì đổi 10.0.2.2 thành IP máy tính (vd: 192.168.x.x)
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "phone": _phoneController.text,
+          "password": _passwordController.text,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Thành công
+        widget.onRegisterSuccess();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(data["message"]),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        // Lỗi từ server
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"]), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Không kết nối được server"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,12 +86,8 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formKey,
             child: Column(
               children: [
-                // Logo hoặc icon user
-                // Logo
                 Image.asset('assets/logo_1.png', width: 300, height: 300),
                 const SizedBox(height: 20),
-                const SizedBox(height: 20),
-
                 const Text(
                   "Tạo Tài Khoản MooCha",
                   style: TextStyle(
@@ -59,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 30),
 
-                // Ô nhập số điện thoại
+                // Số điện thoại
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
@@ -71,18 +110,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty)
                       return "Vui lòng nhập số điện thoại";
-                    }
-                    if (!RegExp(r'^0\d{9}$').hasMatch(value)) {
+                    if (!RegExp(r'^0\d{9}$').hasMatch(value))
                       return "Số điện thoại không hợp lệ";
-                    }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
 
-                // Ô nhập mật khẩu
+                // Mật khẩu
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -94,18 +131,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty)
                       return "Vui lòng nhập mật khẩu";
-                    }
-                    if (value.length < 8) {
-                      return "Mật khẩu ít nhất 8 ký tự";
-                    }
+                    if (value.length < 8) return "Mật khẩu ít nhất 8 ký tự";
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
 
-                // Ô xác nhận mật khẩu
+                // Xác nhận mật khẩu
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: true,
@@ -120,12 +154,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty)
                       return "Vui lòng nhập lại mật khẩu";
-                    }
-                    if (value != _passwordController.text) {
+                    if (value != _passwordController.text)
                       return "Mật khẩu không khớp";
-                    }
                     return null;
                   },
                 ),
@@ -137,14 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        widget.onRegisterSuccess();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Đăng ký thành công!"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                        _registerUser(); // gọi API backend
                       }
                     },
                     style: ElevatedButton.styleFrom(

@@ -70,6 +70,7 @@ class CartItem {
 }
 
 final List<Drink> products = [
+  // mục trà sữa
   Drink(
     name: "Trà sữa truyền thống",
     image: "assets/milktea/tra_sua_truyen_thong.jpg",
@@ -87,7 +88,7 @@ final List<Drink> products = [
       Option(name: "Trân châu đen", extraPrice: 5000),
       Option(name: "Trân châu trắng", extraPrice: 7000),
       Option(name: "Thạch dừa", extraPrice: 3000),
-      Option(name: "Khúc bạch", extraPrice: 5000)
+      Option(name: "Khúc bạch", extraPrice: 5000),
     ],
   ),
   Drink(
@@ -107,7 +108,7 @@ final List<Drink> products = [
       Option(name: "Trân châu đen", extraPrice: 5000),
       Option(name: "Trân châu trắng", extraPrice: 7000),
       Option(name: "Thạch dừa", extraPrice: 3000),
-      Option(name: "Khúc bạch", extraPrice: 5000)
+      Option(name: "Khúc bạch", extraPrice: 5000),
     ],
   ),
   Drink(
@@ -127,9 +128,42 @@ final List<Drink> products = [
       Option(name: "Trân châu đen", extraPrice: 5000),
       Option(name: "Trân châu trắng", extraPrice: 7000),
       Option(name: "Thạch dừa", extraPrice: 3000),
-      Option(name: "Khúc bạch", extraPrice: 5000)
+      Option(name: "Khúc bạch", extraPrice: 5000),
     ],
   ),
+  Drink(
+    name: "Trà Sữa Trân Châu Đường Hổ Khổng Lồ",
+    image: "assets/milktea/sua_tuoi_tran_chau_duong_ho_khong_lo.jpg",
+    price: "35000 VNĐ",
+    rating: 4.8,
+    category: "Trà sữa",
+    description:
+        "Trà sữa Trần Châu Đường Hổ Khổng Lồ thơm ngon , vị trà thanh mát hoà quyện cùng với sữa béo ngậy.",
+
+    sizes: [
+      Option(name: "M", extraPrice: 0),
+      Option(name: "L", extraPrice: 5000),
+      Option(name: "XL", extraPrice: 10000),
+    ],
+    toppings: [
+      Option(name: "Trân châu đen", extraPrice: 5000),
+      Option(name: "Trân châu trắng", extraPrice: 7000),
+      Option(name: "Thạch dừa", extraPrice: 3000),
+      Option(name: "Khúc bạch", extraPrice: 5000),
+    ],
+  ),
+
+  Drink(
+    name: "Trà Sữa Trân Châu Đường Hổ",
+    image: "assets/milktea/sua_tuoi_tran_chau_duong_ho.jpg",
+    price: "30000 VNĐ",
+    rating: 4.9,
+    category: "Trà Sữa",
+    description:
+        "Trà Sữa Trân Châu Đường Hổ Thơm Ngon , vị trà thanh mát hoà quyện cùng với sữa béo ngậy",
+  ),
+
+  // mục cà phê
   Drink(
     name: "Cà phê sữa đá",
     image: "assets/coffee/ca_phe_sua_da.jpg",
@@ -144,7 +178,7 @@ final List<Drink> products = [
     ],
     toppings: [
       Option(name: "Ít sữa", extraPrice: 0),
-      Option(name: "Nhiều sữa", extraPrice: 0)
+      Option(name: "Nhiều sữa", extraPrice: 0),
     ],
   ),
   Drink(
@@ -162,7 +196,7 @@ final List<Drink> products = [
     toppings: [
       Option(name: "Không đường", extraPrice: 0),
       Option(name: "Ít đường", extraPrice: 0),
-      Option(name: "Nhiều đường", extraPrice: 0)
+      Option(name: "Nhiều đường", extraPrice: 0),
     ],
   ),
   Drink(
@@ -171,7 +205,8 @@ final List<Drink> products = [
     price: "20000 VNĐ",
     rating: 4.8,
     category: "Cà phê",
-    description: "Cà phê muối - vị đắng dịu, thơm nồng, tạo trải nghiệm thưởng thức độc đáo và cân bằng hương vị.",
+    description:
+        "Cà phê muối - vị đắng dịu, thơm nồng, tạo trải nghiệm thưởng thức độc đáo và cân bằng hương vị.",
     sizes: [
       Option(name: "M", extraPrice: 0),
       Option(name: "L", extraPrice: 5000),
@@ -180,9 +215,10 @@ final List<Drink> products = [
     toppings: [
       Option(name: "Không đường", extraPrice: 0),
       Option(name: "Ít đường", extraPrice: 0),
-      Option(name: "Nhiều đường", extraPrice: 0)
+      Option(name: "Nhiều đường", extraPrice: 0),
     ],
   ),
+  //mục sinh tố
   Drink(
     name: "Sinh tố bơ",
     image: "assets/sinhto/sinh_to_bo.jpg",
